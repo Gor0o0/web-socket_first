@@ -1,0 +1,13 @@
+<h1>Web Socket</h1>
+<script>
+    let ws = new WebSocket('ws://localhost:8000'); //> WebSocket - изначально класс
+
+    ws.onopen = (event) => { //> открывать соединение
+        console.log(event);
+        ws.send("Hello, server!");
+        ws.addEventListener('message', (event) => {
+            console.log("Server:", event.data);
+        });
+    };
+    
+</script>

@@ -1,0 +1,46 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+    <title>Chat Io</title>
+</head>
+<body>
+    <div>
+        <input type="text" id="messageInput" placeholder="Enter your message">
+        <button id="sendMessageBtn">Send</button>
+    </div>
+
+    <div id="messageContainer">
+        <ul id="messageList"></ul>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+        const socket = io('http://localhost:8000'); 
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendMessageBtn');
+        const messageList = document.getElementById('messageList');
+
+        function sendMessage(){
+            let data = messageInput.value.trim();
+            if (data) {
+                socket.emit('messageFromClient', { text: data });
+                messageInput.value = '';
+            }
+        }
+
+        socket.on('connect', () => console.log('connected'));
+        socket.on('newMessageFromServer', (data) => {
+            const li = document.createElement('li');
+            li.textContent = data.text;
+            messageList.appendChild(li); // appendChild добавляет элемент в конец списка
+        });
+
+        sendBtn.addEventListener('click', sendMessage);
+
+        messageInput.addEventListener('keypress', (e) => e.key === 'Enter' && sendBtn.click());
+    </script>
+</body>
+</html>
